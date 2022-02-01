@@ -19,7 +19,7 @@ class Search extends React.Component {
   }
 
   handleChange(event) {
-    const { artistName, value } = event.target;
+    const { value } = event.target;
     this.setState({ artistName: value }, () => this.validationButton());
   }
 

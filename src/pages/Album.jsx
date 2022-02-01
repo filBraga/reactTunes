@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import { addSong } from '../services/favoriteSongsAPI';
@@ -11,7 +12,7 @@ class Album extends React.Component {
     // https://stackoverflow.com/questions/44318631/how-get-the-value-of-match-params-id-on-react-router
     this.state = {
       isLoadingMessageEnable: false,
-      checked: [],
+      // checked: [],
       id: match.params.id,
       album: [],
       albumInfos: {
@@ -43,8 +44,8 @@ class Album extends React.Component {
     });
   };
 
-  addFavSongFunc(item) {
-    this.setState({checked: item})
+  addFavSongFunc() {
+    // this.setState({ checked: item })
     this.setState({ isLoadingMessageEnable: true });
     addSong().then(() => {
       this.setState({ isLoadingMessageEnable: false });
@@ -54,7 +55,7 @@ class Album extends React.Component {
   render() {
     const {
       album,
-      albumInfos: { title, cover, artist },
+      albumInfos: { title, artist /* cover */ },
       isLoadingMessageEnable,
     } = this.state;
 
@@ -71,11 +72,11 @@ class Album extends React.Component {
             <h3 data-testid="album-name">{title}</h3>
             <ul>
               {album.map((item) => (
-                <div key={item.trackId}>
+                <div key={ item.trackId }>
                   <li>{`${item.trackName}`}</li>
                   <audio
                     data-testid="audio-component"
-                    src={item.previewUrl}
+                    src={ item.previewUrl }
                     controls
                   >
                     <track kind="captions" />
@@ -83,14 +84,14 @@ class Album extends React.Component {
                     elemento
                     <code>audio</code>
                   </audio>
-                  <label>
+                  <label htmlFor="isGoing">
                     Favorita
                     <input
                       name="isGoing"
                       type="checkbox"
-                      data-testid={`checkbox-music-${item.trackId}`}
+                      data-testid={ `checkbox-music-${item.trackId}` }
                       // checked={ }
-                      onChange={this.addFavSongFunc(item.trackId)}
+                      onChange={ this.addFavSongFunc(item.trackId) }
                     />
                   </label>
                 </div>
@@ -102,5 +103,9 @@ class Album extends React.Component {
     );
   }
 }
+
+Album.propTypes = {
+  match: PropTypes.func.isRequired,
+};
 
 export default Album;
