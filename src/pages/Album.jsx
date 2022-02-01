@@ -44,12 +44,15 @@ class Album extends React.Component {
     });
   };
 
-  addFavSongFunc() {
+  addFavSongFunc(item) {
     // this.setState({ checked: item })
-    this.setState({ isLoadingMessageEnable: true });
-    addSong().then(() => {
-      this.setState({ isLoadingMessageEnable: false });
-    });
+
+    console.log(item);
+
+    // this.setState({ isLoadingMessageEnable: true });
+    // addSong(item).then(() => {
+    //   this.setState({ isLoadingMessageEnable: false });
+    // });
   }
 
   render() {
