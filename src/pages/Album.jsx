@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor(props) {
@@ -26,12 +26,9 @@ class Album extends React.Component {
 
   componentDidMount() {
     this.getMusicsFromApi();
-    getFavoriteSongs();
     this.loadingLocalStorage();
+    getFavoriteSongs();
   }
-
-  // componentDidUpdate() {
-  // }
 
   getMusicsFromApi = async () => {
     const { id } = this.state;
@@ -50,10 +47,20 @@ class Album extends React.Component {
   };
 
   addFavSongFunc(item) {
-    this.setState({ isLoadingMessageEnable: true });
-    addSong(item).then(() => {
-      this.loadingLocalStorage();
-    });
+    const array = JSON.parse(localStorage.getItem('favorite_songs'));
+    const check = array.some((ele) => ele.trackId === item.trackId);
+
+    if (check) {
+      this.setState({ isLoadingMessageEnable: true });
+      removeSong(item).then(() => {
+        this.loadingLocalStorage();
+      });
+    } else {
+      this.setState({ isLoadingMessageEnable: true });
+      addSong(item).then(() => {
+        this.loadingLocalStorage();
+      });
+    }
   }
 
   loadingLocalStorage() {
@@ -66,7 +73,7 @@ class Album extends React.Component {
 
   checkIfHasInFavorite(item) {
     const { favoriteSongs } = this.state;
-    const resultado = favoriteSongs.includes(item);
+    const resultado = favoriteSongs.some((ele) => ele.trackId === item.trackId);
     return resultado;
   }
 
@@ -108,8 +115,8 @@ class Album extends React.Component {
                       name="isGoing"
                       type="checkbox"
                       data-testid={ `checkbox-music-${item.trackId}` }
-                      checked={ this.checkIfHasInFavorite(item.trackId) }
-                      onChange={ () => { this.addFavSongFunc(item.trackId); } }
+                      checked={ this.checkIfHasInFavorite(item) }
+                      onChange={ () => { this.addFavSongFunc(item); } }
                       // onChange={ () => { this.checkIfHasInFavorite(item.trackId); } }
                     />
                   </label>
